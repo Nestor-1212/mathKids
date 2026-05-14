@@ -1,0 +1,64 @@
+name: math_kids_panama
+description: Aplicación educativa de matemáticas para niños panameños Pre-K a 6to grado.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Estado global
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Base de datos local (offline completo)
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+
+  # Audio y texto a voz (narración de Mateo)
+  flutter_tts: ^4.0.2
+
+  # Animaciones Lottie (mascota Mateo)
+  lottie: ^3.1.2
+
+  # Confetti al completar lecciones
+  confetti: ^0.7.0
+
+  # Preferencias simples (PIN padres, configuración)
+  shared_preferences: ^2.2.3
+
+  # Directorios del sistema
+  path_provider: ^2.1.3
+
+  # Fechas y localización
+  intl: ^0.19.0
+
+  # Navegación declarativa
+  go_router: ^14.2.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.11
+  riverpod_generator: ^2.4.3
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/audio/
+    - assets/animations/
+
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Nunito-ExtraBold.ttf
+          weight: 800
