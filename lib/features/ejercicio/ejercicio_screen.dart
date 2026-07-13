@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/constants/assets.dart';
 import '../../core/constants/colores.dart';
 import '../../core/constants/estilos_texto.dart';
 import '../../core/utils/audio_service.dart';
@@ -314,15 +315,24 @@ class _ContenidoEjercicio extends StatelessWidget {
 
             // ── Imagen del ejercicio (ej. contar objetos) ─────
             if (ejercicio.imagenPath != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  ejercicio.imagenPath!,
-                  height: 120,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              if (AppAssets.esNumeroGrande(ejercicio.imagenPath!))
+                Text(
+                  AppAssets.valorNumeroGrande(ejercicio.imagenPath!),
+                  style: AppTextos.numeroPrincipal.copyWith(
+                    fontSize: 96,
+                    color: AppColores.azulOscuro,
+                  ),
+                )
+              else
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    ejercicio.imagenPath!,
+                    height: 120,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
             ],
 

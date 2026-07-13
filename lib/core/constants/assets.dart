@@ -16,6 +16,14 @@ class AppAssets {
   static const mateoDurmiendo    = '${_anim}mateo_durmiendo.json';
   static const mateoHablando     = '${_anim}mateo_hablando.json';
 
+  // ── Numeral grande para ejercicios "¿Qué número es este?" ─
+  // No es un archivo de imagen: EjercicioScreen reconoce este prefijo
+  // y dibuja el dígito como texto grande en vez de cargar un asset.
+  static const _prefijoNumero = 'numero:';
+  static String numeroGrande(Object n) => '$_prefijoNumero$n';
+  static bool esNumeroGrande(String path) => path.startsWith(_prefijoNumero);
+  static String valorNumeroGrande(String path) => path.substring(_prefijoNumero.length);
+
   // ── Imágenes generales ────────────────────────────────────
   static const logo            = '${_img}logo.png';
   static const fondoOnboarding = '${_img}fondo_onboarding.png';

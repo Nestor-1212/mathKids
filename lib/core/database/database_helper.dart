@@ -16,7 +16,7 @@ class DatabaseHelper {
   static Database? _db;
 
   static const _nombreDB = 'math_kids_panama.db';
-  static const _versionDB = 2;
+  static const _versionDB = 3;
 
   // ── Nombres de tablas ─────────────────────────────────────
   static const tablaUsuarios        = 'usuarios';

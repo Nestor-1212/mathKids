@@ -130,7 +130,8 @@ class SeedData {
       _e(leccionId, 0, '¿Qué número viene después del 3?', ['2','4','5','1'], '4', 1),
       _e(leccionId, 0, '¿Cuántos perros hay?', ['1','2','3','4'], '4', 1,
           imagenPath: AppAssets.conteoPerros),
-      _e(leccionId, 0, '¿Qué número es este?', ['3','4','5','2'], '5', 1),
+      _e(leccionId, 0, '¿Qué número es este?', ['3','4','5','2'], '5', 1,
+          imagenPath: AppAssets.numeroGrande(5)),
       _e(leccionId, 1, '5 + ___ = 5', [], '0', 1, pista: 'El número 0 no agrega nada.'),
     ];
     for (final e in ejercicios) {
@@ -146,6 +147,7 @@ class SeedData {
         _opcionesAleatorias(i, 1, 10),
         '$i',
         1,
+        imagenPath: AppAssets.numeroGrande(i),
       ));
     }
   }
