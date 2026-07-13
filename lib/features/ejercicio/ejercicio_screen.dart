@@ -30,6 +30,11 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
   bool _respondido = false;
   String? _mensajeMateo;
   EstadoMateo _estadoMateo = EstadoMateo.feliz;
+  // Congela el ejercicio que se está calificando: el motor avanza su cola
+  // apenas se registra la respuesta, así que sin esto la UI compararía
+  // contra la respuesta correcta de la SIGUIENTE pregunta mientras
+  // todavía se muestra el feedback de la actual.
+  Ejercicio? _ejercicioCalificando;
 
   late AnimationController _transicionController;
   late Animation<double> _transicionOpacidad;
@@ -66,9 +71,12 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
   Future<void> _responder(String respuesta) async {
     if (_respondido) return;
 
+    final ejercicioActual = ref.read(motorAdaptativoProvider).motor?.ejercicioActual;
+
     setState(() {
       _respuestaSeleccionada = respuesta;
       _respondido = true;
+      _ejercicioCalificando = ejercicioActual;
     });
 
     final esCorrecta =
@@ -114,6 +122,7 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
     setState(() {
       _respuestaSeleccionada = null;
       _respondido = false;
+      _ejercicioCalificando = null;
       _estadoMateo = EstadoMateo.feliz;
       _mensajeMateo = null;
     });
@@ -173,6 +182,7 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
           setState(() {
             _respuestaSeleccionada = null;
             _respondido = false;
+            _ejercicioCalificando = null;
             _estadoMateo = EstadoMateo.feliz;
             _mensajeMateo = null;
           });
@@ -213,6 +223,7 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
               opacity: _transicionOpacidad,
               child: _ContenidoEjercicio(
                 motor: motor,
+                ejercicio: _ejercicioCalificando ?? motor.ejercicioActual,
                 respuestaSeleccionada: _respuestaSeleccionada,
                 respondido: _respondido,
                 mensajeMateo: _mensajeMateo,
@@ -257,6 +268,7 @@ class _EjercicioScreenState extends ConsumerState<EjercicioScreen>
 
 class _ContenidoEjercicio extends StatelessWidget {
   final dynamic motor; // AdaptiveEngine
+  final Ejercicio? ejercicio;
   final String? respuestaSeleccionada;
   final bool respondido;
   final String? mensajeMateo;
@@ -265,6 +277,7 @@ class _ContenidoEjercicio extends StatelessWidget {
 
   const _ContenidoEjercicio({
     required this.motor,
+    required this.ejercicio,
     required this.respuestaSeleccionada,
     required this.respondido,
     required this.mensajeMateo,
@@ -274,7 +287,7 @@ class _ContenidoEjercicio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ejercicio = motor.ejercicioActual as Ejercicio?;
+    final ejercicio = this.ejercicio;
     if (ejercicio == null) return const SizedBox.shrink();
 
     return SafeArea(
@@ -298,6 +311,20 @@ class _ContenidoEjercicio extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
+
+            // ── Imagen del ejercicio (ej. contar objetos) ─────
+            if (ejercicio.imagenPath != null) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  ejercicio.imagenPath!,
+                  height: 120,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // ── Pregunta ──────────────────────────────────────
             Container(
@@ -327,6 +354,7 @@ class _ContenidoEjercicio extends StatelessWidget {
             Expanded(
               child: ejercicio.tipo == TipoEjercicio.completarBlanco
                   ? PreguntaCompletar(
+                      key: ValueKey(ejercicio.id),
                       onSubmit: alResponder,
                       deshabilitado: respondido,
                     )

@@ -52,6 +52,11 @@ class AppAssets {
   static const mateoCorona         = '${_img}mateo_corona.png';
   static const mateoBanda          = '${_img}mateo_banda.png';
 
+  // ── Imágenes de conteo (ejercicios "¿Cuántos X hay?") ────
+  static const conteoManzanas = '${_img}conteo_manzanas.png';
+  static const conteoGatos    = '${_img}conteo_gatos.png';
+  static const conteoPerros   = '${_img}conteo_perros.png';
+
   // ── Íconos de materias / temas ───────────────────────────
   static const iconoSuma          = '${_img}icono_suma.png';
   static const iconoResta         = '${_img}icono_resta.png';

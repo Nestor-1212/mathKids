@@ -122,11 +122,14 @@ class SeedData {
   static void _agregarEjerciciosConteo(Batch batch, int leccionId) {
     final ejercicios = [
       _e(leccionId, 0, '¿Cuántos manzanas hay?', ['1','2','3','4'], '3', 1,
+          imagenPath: AppAssets.conteoManzanas,
           pista: 'Cuenta uno por uno: 1, 2, 3...'),
       _e(leccionId, 0, '¿Cuántos gatos hay?', ['2','3','4','5'], '2', 1,
+          imagenPath: AppAssets.conteoGatos,
           pista: 'Cuenta los gatitos.'),
       _e(leccionId, 0, '¿Qué número viene después del 3?', ['2','4','5','1'], '4', 1),
-      _e(leccionId, 0, '¿Cuántos perros hay?', ['1','2','3','4'], '4', 1),
+      _e(leccionId, 0, '¿Cuántos perros hay?', ['1','2','3','4'], '4', 1,
+          imagenPath: AppAssets.conteoPerros),
       _e(leccionId, 0, '¿Qué número es este?', ['3','4','5','2'], '5', 1),
       _e(leccionId, 1, '5 + ___ = 5', [], '0', 1, pista: 'El número 0 no agrega nada.'),
     ];

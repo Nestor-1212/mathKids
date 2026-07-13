@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:path/path.dart';
 import '../../models/usuario.dart';
 import '../../models/leccion.dart';
@@ -14,7 +16,7 @@ class DatabaseHelper {
   static Database? _db;
 
   static const _nombreDB = 'math_kids_panama.db';
-  static const _versionDB = 1;
+  static const _versionDB = 2;
 
   // ── Nombres de tablas ─────────────────────────────────────
   static const tablaUsuarios        = 'usuarios';
@@ -33,17 +35,53 @@ class DatabaseHelper {
   }
 
   Future<Database> _inicializar() async {
+    if (kIsWeb) {
+      // En web no hay sistema de archivos: sqflite se apoya en IndexedDB
+      // a través del factory ffi_web, identificando la DB solo por nombre.
+      databaseFactory = databaseFactoryFfiWeb;
+      return databaseFactory.openDatabase(
+        _nombreDB,
+        options: OpenDatabaseOptions(
+          version: _versionDB,
+          onCreate: _crearTablas,
+          onUpgrade: _actualizarTablas,
+          onConfigure: _configurarPragmas,
+        ),
+      );
+    }
+
     final rutaDB = join(await getDatabasesPath(), _nombreDB);
     return openDatabase(
       rutaDB,
       version: _versionDB,
       onCreate: _crearTablas,
+      onUpgrade: _actualizarTablas,
       onConfigure: _configurarPragmas,
     );
   }
 
+  /// El contenido base (lecciones, ejercicios, logros) todavía se define
+  /// en código y no en datos del usuario, así que una actualización de
+  /// versión simplemente recrea el esquema y lo vuelve a poblar.
+  Future<void> _actualizarTablas(Database db, int oldVersion, int newVersion) async {
+    for (final tabla in [
+      tablaLogrosUsuario,
+      tablaLogros,
+      tablaSesiones,
+      tablaProgreso,
+      tablaEjercicios,
+      tablaLecciones,
+      tablaUsuarios,
+    ]) {
+      await db.execute('DROP TABLE IF EXISTS $tabla');
+    }
+    await _crearTablas(db, newVersion);
+  }
+
   /// Activa foreign keys (SQLite las trae desactivadas por defecto).
+  /// El factory web no soporta PRAGMA, así que se omite ahí.
   Future<void> _configurarPragmas(Database db) async {
+    if (kIsWeb) return;
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
